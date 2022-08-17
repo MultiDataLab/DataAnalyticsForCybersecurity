@@ -1,0 +1,419 @@
+---
+title: "Datasets for cybersecurity"
+author: "Javad Zabihi"
+output:
+  md_document:
+    variant: markdown_github
+    
+---
+
+# Introduction
+
+Here is a list of cybersecurity datasets with a brief introduction about them.
+
+```{r}
+# Libraries
+
+library (dplyr)
+library(plyr)
+
+```
+
+```{r}
+# Define a function that outputs a quick data quality report.
+
+data_report <- function(df) {
+  
+  #DataFrame with column names and their data types
+  data_types <- data.frame('data_type'= sapply(df, class))
+
+  #DataFrame with Count
+  data_count <- data.frame('count' = colSums(!is.na(df)))
+
+  #DataFrame with unique values
+  unique_value_counts <- data.frame('unique_values'= sapply(df, function(x) length(unique(x))))
+ 
+  #Dataframe with number of missing values for each column
+  missing_data_counts <- data.frame('missing_values'= sapply(df, function(x) sum(length(which(is.na(x))))))
+  
+  #Combine all dataframes
+  data_quality_report <- cbind(data_types, data_count, unique_value_counts, missing_data_counts )
+  print('Data Quality Report')
+
+  return(data_quality_report)
+}
+
+```
+
+### 1. KDD Dataset
+
+One of the most popular datasets for building a network intrusion detector and contains a great number of intrusions simulated in a military network environment.
+
+http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html
+
+```{r}
+kdd = read.csv('kddcup.data.corrected.csv', header = FALSE)
+print("Shape of Dataset:")
+print(dim(kdd))
+str(kdd)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(kdd)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(kdd, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(kdd, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'V2')
+count(categorical_columns, 'V3')
+count(categorical_columns, 'V4')
+count(categorical_columns, 'V42')
+
+```
+
+
+
+
+### 2. NSL-KDD Dataset
+
+This dataset is an improvement over KDD dataset and is created with the aim of overcoming some of the problems that existed in KDD dataset. Having a considerable number of records for train and test data, makes this dataset a good choice for experiments.
+
+https://www.unb.ca/cic/datasets/nsl.html
+
+```{r}
+nsl_kdd = read.table('KDDTrain+_20Percent.txt',sep=",", header = FALSE )
+print("Shape of Dataset:")
+print(dim(nsl_kdd))
+str(nsl_kdd)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(nsl_kdd)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(nsl_kdd, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(nsl_kdd, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'V2')
+count(categorical_columns, 'V3')
+count(categorical_columns, 'V4')
+count(categorical_columns, 'V42')
+
+```
+
+### 3. Credit Card Fraud
+
+The highly unbalanced dataset belongs to 2013 transactions of European cardholders. The features in this dataset are the result of PCA transformation and we do not have any information about the actual features.
+
+This is a labeled dataset.
+
+https://www.kaggle.com/samkirkiles/credit-card-fraud/data
+
+
+```{r}
+credit_data = read.csv('creditcard.csv')
+print("Shape of Dataset:")
+print(dim(credit_data))
+str(credit_data)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(credit_data)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(credit_data, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(credit_data, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(credit_data, 'Class')
+
+```
+
+
+### 4. DDS Dataset Collection
+
+There are two datasets, one gives the information about AWS honeypots and the second one adds some information about the geolocation.
+
+http://datadrivensecurity.info/blog/pages/dds-dataset-collection.html
+
+
+```{r}
+marx = read.csv('marx.csv')
+print("Shape of Dataset:")
+print(dim(marx))
+str(marx)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(marx)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(marx, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(marx, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'host')
+count(categorical_columns, 'proto')
+count(marx, 'type')
+
+```
+
+
+```{r}
+marx_geo = read.csv('marx-geo.csv')
+print("Shape of Dataset:")
+print(dim(marx_geo))
+str(marx_geo)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(marx_geo)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(marx_geo, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(marx_geo, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'host')
+count(categorical_columns, 'proto')
+count(marx_geo, 'type')
+
+```
+
+
+### 5. UNSW-NB15 Dataset
+
+The Australian Center for Cyber Security (ACCS) created this dataset that contains nine types of attack. Another dataset for network intrusion detection which can be compared with KDD dataset.
+
+This is a labeled dataset.
+
+https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/
+
+```{r}
+unsw_data = read.csv('UNSW-NB15_1.csv', header = FALSE)
+print("Shape of Dataset:")
+print(dim(unsw_data))
+str(unsw_data)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(unsw_data)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(unsw_data, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(unsw_data, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'V1')
+count(categorical_columns, 'V3')
+count(categorical_columns, 'V6')
+count(categorical_columns, 'V48')
+
+```
+
+
+### 6. CSIC 2010 http dataset
+
+The CSIC 2010 HTTP dataset includes web application penetration testing packets and is created with the goal of feature selection before working on classification.
+
+This is a labeled dataset.
+
+https://petescully.co.uk/research/csic-2010-http-dataset-in-csv-format-for-weka-analysis/
+
+```{r}
+csic_data = read.csv('output_http_csic_2010.csv')
+print("Shape of Dataset:")
+print(dim(csic_data))
+str(csic_data)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(csic_data)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(csic_data, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(csic_data, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'method')
+count(categorical_columns, 'host')
+count(categorical_columns, 'label')
+
+```
+
+
+### 7. Malware apps from Drebin project
+
+The dataset contains more than 200 features from malware and benign apps and is useful for developing and evaluating multilevel classification.
+
+This is a labeled dataset.
+
+https://figshare.com/articles/Android_malware_dataset_for_machine_learning_2/5854653/1
+
+```{r}
+drebin_data = read.csv('drebin.csv')
+print("Shape of Dataset:")
+print(dim(drebin_data))
+str(drebin_data)
+
+```
+
+
+```{r}
+#Call 'data_report' function for the dataset
+data_report(drebin_data)
+
+```
+
+```{r}
+#Create a dataframe of numeric columns
+numeric_columns <- select_if(drebin_data, is.numeric)
+head(numeric_columns)
+sprintf("Number of numerical columns: %i", ncol(numeric_columns))
+
+```
+
+```{r}
+#Create a dataframe of categorical columns
+categorical_columns <- select_if(drebin_data, is.factor)
+head(categorical_columns)
+sprintf("Number of categorical columns: %i", ncol(categorical_columns))
+
+```
+
+```{r}
+#The frequency of different levels of each categorical column
+count(categorical_columns, 'TelephonyManager.getSimCountryIso')
+count(categorical_columns, 'class')
+
+```
+
